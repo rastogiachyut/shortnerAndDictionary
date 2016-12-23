@@ -21,6 +21,17 @@ word: is [key, valueQ]
 element: is [value1, timestamp]
     element.value = value
     element.tmestamp = timestamp
+
+The steps for adding are:
+1)Get index from hash function.
+2)Create word and add to calculated bucket if key is new else get old word and
+push in new value version.
+3)Check load, rehash if needed.
+
+The steps for getting are:
+1)Get index from hash function.
+2)Get word from bucket, O(bucket_size)
+3)Return word
 """
 
 import time
@@ -64,6 +75,7 @@ class Dictionary:
 
     def __init__(self, versions):
         self.size = 3
+        # not a realistic size to start from but better for testing
         self.load = 0
         self.versions = versions
         self.hash = [[]] * self.size
