@@ -47,4 +47,4 @@ if __name__ == "__main__":
     print(str1 + ' lengtens to: ' + str2)
     urls = [line.strip('\n') for line in open('urls.txt')]
     for url in urls:
-        shorten(url)
+        print(shorten(url))
