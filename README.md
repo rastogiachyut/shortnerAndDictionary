@@ -13,7 +13,8 @@ code.
 Limitations:
 
 1)URL shortener
-- It can handle a max of 100000 urls only.
+- It can handle a max of 100000 urls only. It takes about 5 minutes to
+process all the urls.
 - No regex has been added to check for urls only.
 
 2)Dictionary

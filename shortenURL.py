@@ -5,6 +5,17 @@ Class ShortenURL stores the input url in an array (or db) and converts its corre
 (or id) into a base62(10 + 26 + 26) string. The conversion to base62 is invertible, thus
 facilitating retrieval (conversion is bijective).
 
+The steps for shortening are:
+1)Get a random and unique index.
+2)Store url on that index.
+3)conver index to base62 string.
+4)return string.
+
+The steps for lengthening are:
+1)Convert base62 to base10 index.
+2)Use index to retrive url.
+3)Return url.
+
 ShortenURL.toBase62() converts base10(numvers) to base62(string)
 ShortenURL.toBase10() converts base62(string) to base10(numvers)
 """
@@ -41,10 +52,13 @@ def lengthen(ID):
 
 
 if __name__ == "__main__":
-    str1 = shorten('http://www.billboard.com/charts/hot-100')
-    print('http://www.billboard.com/charts/hot-100 shortened to: ' + str1)
-    str2 = lengthen(str1)
-    print(str1 + ' lengtens to: ' + str2)
+    #str1 = shorten('http://www.billboard.com/charts/hot-100')
+    #print('http://www.billboard.com/charts/hot-100 shortened to: ' + str1)
+    #str2 = lengthen(str1)
+    #print(str1 + ' lengtens to: ' + str2)
     urls = [line.strip('\n') for line in open('urls.txt')]
     for url in urls:
         print(shorten(url))
+
+
+

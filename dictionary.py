@@ -24,6 +24,7 @@ element: is [value1, timestamp]
 """
 
 import time
+import math
 import datetime
 from shortenURL import toBase10
 
@@ -62,16 +63,48 @@ class Word:
 class Dictionary:
 
     def __init__(self, versions):
+        self.size = 3
+        self.load = 0
         self.versions = versions
-        self.hash = [[] for x in range(103)]
-        # hash with 100 buckets
+        self.hash = [[]] * self.size
+        # hash with 103 buckets
+
+    def is_prime(self, n):
+        if n % 2 == 0 and n > 2:
+            return False
+        for i in range(3, int(math.sqrt(n)) + 1, 2):
+            if n % i == 0:
+                return False
+        return True
+
+    def next_prime(self, currentPrime):
+        new_size = 2 * currentPrime
+        while not self.is_prime(new_size):
+            new_size += 1
+        return new_size
+
+    def add_word(self, word):
+        index_bucket = self.hash_function(word.key)
+        self.hash[index_bucket].append(word)
 
     def hash_function(self, key):
-        # calculate index
-        index = toBase10(key) % 103
+        index = toBase10(key) % self.size
         return index
 
-    def getWord(self, index_bucket, key):
+    def rehash(self):
+        # Used when load_factor is 0.7 or more
+        self.size = self.next_prime(self.size)
+        old_hash = self.hash
+        self.hash = [[]] * self.size
+        for bucket in old_hash:
+            for word in bucket:
+                self.add_word(word)
+
+    def check_load(self):
+        if self.load/self.size >= 0.7:
+            self.rehash()
+
+    def get_word(self, index_bucket, key):
         for word in self.hash[index_bucket]:
             if word.key == key:
                 return word
@@ -79,15 +112,17 @@ class Dictionary:
 
     def add(self, key, value):
         index_bucket = self.hash_function(key)
-        word = self.getWord(index_bucket, key)
+        word = self.get_word(index_bucket, key)
         if not word:
             word = Word(key, self.versions)
             self.hash[index_bucket].append(word)
         word.valueQ.push(value)
+        self.load += 1
+        self.check_load()
 
     def get(self, key, version = 0):
         index_bucket = self.hash_function(key)
-        word = self.getWord(index_bucket, key)
+        word = self.get_word(index_bucket, key)
         if word:
             element = word.valueQ.get(version)
             print(element.value, element.timestamp)
@@ -97,7 +132,16 @@ class Dictionary:
             return 0
 
 
-
-
+if __name__ == "__main__":
+    d = Dictionary(2)
+    print(len(d.hash))
+    d.add('q', 12)
+    d.add('q', 34)
+    d.add('w', 13)
+    d.add('e', 14)
+    print(len(d.hash))
+    d.get('q')
+    d.get('w')
+    d.get('e')
 
 
