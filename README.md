@@ -22,3 +22,5 @@ small alphabets + acpital alphabets.
 - The hashing is relatively simple and collisions are simply handled
 by extending the buckets, better techniques can be used if the type
 of keys or use of dictionary are known.
+- The get function returns a object of type element, element has two
+attributes, value and timestamp. It also prints these values.
